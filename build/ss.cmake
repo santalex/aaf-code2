@@ -52,9 +52,9 @@ elseif(UNIX)
 elseif(MSVC)
     # Required with OM_USE_SCHEMASOFT_SS
 	if (CMAKE_CL_64)
-		set(SS_LIB_PATH ${AAFSDK_ROOT}/AAFWinSDK/vs10/sss-impl/x64/ssrw_c.lib)
+		set(SS_LIB_PATH ${AAFSDK_ROOT}/AAFWinSDK/vs12/sss-impl/x64/ssrw_c.lib)
 	else()
-		set(SS_LIB_PATH ${AAFSDK_ROOT}/AAFWinSDK/vs10/sss-impl/Win32/ssrw_c.lib)
+		set(SS_LIB_PATH ${AAFSDK_ROOT}/AAFWinSDK/vs12/sss-impl/Win32/ssrw_c.lib)
 	endif()
 endif()
 
