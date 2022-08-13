@@ -288,7 +288,7 @@ OMSimpleProperty::OMSimpleProperty(const OMPropertyId propertyId,
   //   @parm The size of this <c OMSimpleProperty>.
 OMSimpleProperty::OMSimpleProperty(const OMPropertyId propertyId,
                                    const wchar_t* name,
-                                   OMPropertySize valueSize)
+                                   OMUInt32 valueSize)
 : OMProperty(propertyId, SF_DATA, name),
   _size(0),
   _bits(0)
@@ -310,7 +310,7 @@ OMSimpleProperty::~OMSimpleProperty(void)
   // @mfunc The size of this <c OMSimpleProperty>.
   //   @rdesc The property size in bytes.
   //   @this const
-OMPropertySize OMSimpleProperty::size(void) const
+OMUInt32 OMSimpleProperty::size(void) const
 { 
   TRACE("OMSimpleProperty::size");
 
@@ -329,7 +329,7 @@ OMUInt64 OMSimpleProperty::objectCount(void) const
 
   // @mfunc Set the size of this <c OMSimpleProperty> to <p newSize> bytes.
   //   @parm The new property size in bytes.
-void OMSimpleProperty::setSize(OMPropertySize newSize)
+void OMSimpleProperty::setSize(OMUInt32 newSize)
 {
   TRACE("OMSimpleProperty::setSize");
 
@@ -383,9 +383,9 @@ void OMSimpleProperty::deepCopyTo(OMProperty* /* destination */,
 
   // @mfunc Get the value of this <c OMSimpleProperty>.
   //   @parm The buffer to receive the property value.
-  //   @parm OMPropertySize | valueSize | The size of the buffer.
+  //   @parm OMUInt32 | valueSize | The size of the buffer.
   //   @this const
-void OMSimpleProperty::get(void* value, OMPropertySize ANAME(valueSize)) const
+void OMSimpleProperty::get(void* value, OMUInt32 ANAME(valueSize)) const
 {
   TRACE("OMSimpleProperty::get");
   PRECONDITION("Valid data buffer", value != 0);
@@ -400,7 +400,7 @@ void OMSimpleProperty::get(void* value, OMPropertySize ANAME(valueSize)) const
   //   @parm The address of the property value.
   //   @parm The size of the value.
   //   @this const
-void OMSimpleProperty::set(const void* value, OMPropertySize valueSize)
+void OMSimpleProperty::set(const void* value, OMUInt32 valueSize)
 {
   TRACE("OMSimpleProperty::set");
   PRECONDITION("Valid data buffer", value != 0);
@@ -560,7 +560,6 @@ void OMSimpleProperty::setBits(const OMByte* bits, OMUInt32 size)
   PRECONDITION("Valid bits", bits != 0);
   PRECONDITION("Valid size", size > 0);
 
-  ASSERT("Property value not too big", size <= OMPROPERTYSIZE_MAX);
-  set(bits, static_cast<OMPropertySize>(size));
+  set(bits, size);
 }
 

@@ -65,7 +65,7 @@ OMVariableSizeProperty<PropertyType>::~OMVariableSizeProperty(void)
 template <typename PropertyType>
 void OMVariableSizeProperty<PropertyType>::getValue(
                                                 PropertyType* value,
-                                                OMPropertySize valueSize) const
+                                                OMUInt32 valueSize) const
 {
   TRACE("OMVariableSizeProperty<PropertyType>::getValue");
   PRECONDITION("Valid size", valueSize >= size());
@@ -82,7 +82,7 @@ void OMVariableSizeProperty<PropertyType>::getValue(
   //   @parm The size of the array <p value> in bytes
 template <typename PropertyType>
 void OMVariableSizeProperty<PropertyType>::setValue(const PropertyType* value,
-                                                    OMPropertySize valueSize)
+                                                    OMUInt32 valueSize)
 {
   TRACE("OMVariableSizeProperty<PropertyType>::setValue");
 
@@ -105,11 +105,7 @@ void OMVariableSizeProperty<PropertyType>::setElementValues(
   PRECONDITION("Valid value", value != 0);
   PRECONDITION("Valid count", elementCount > 0);
 
-  OMUInt32 sz = elementCount * sizeof(PropertyType);
-  ASSERT("Property value not too big", sz <= OMPROPERTYSIZE_MAX);
-  OMPropertySize size = static_cast<OMPropertySize>(sz);
-  setValue(value, size);
-
+  OMUInt32 size = elementCount * sizeof(PropertyType);  setValue(value, size);
 }
 
   // @mfunc Get the value of the item at position <p index> in this
@@ -232,15 +228,8 @@ bool OMVariableSizeProperty<PropertyType>::copyToBuffer(
   PRECONDITION("Valid buffer size", bufferSize > 0);
 
   bool result;
-  OMPropertySize sz;
-  if (bufferSize <= OMPROPERTYSIZE_MAX) {
-    sz = static_cast<OMPropertySize>(bufferSize);
-  } else {
-    sz = OMPROPERTYSIZE_MAX;
-  }
-
-  if (sz >= size()) {
-    getValue(buffer, sz);
+  if (bufferSize >= size()) {
+    getValue(buffer, bufferSize);
     result = true;
   } else {
     result = false;

@@ -53,12 +53,12 @@ public:
   virtual ~OMArrayProperty(void);
 
     // @cmember Get the value of this <c OMArrayProperty>.
-  void getValue(Element* value, OMPropertySize valueSize) const;
+  void getValue(Element* value, OMUInt32 valueSize) const;
 
     // @cmember Set the value of this <c OMArrayProperty>. The
     //          value is set by copying <p valueSize> bytes from the
     //          address <p value> into the <c OMArrayProperty>.
-  void setValue(const Element* value, OMPropertySize valueSize);
+  void setValue(const Element* value, OMUInt32 valueSize);
 
     // @cmember Set the value of this <c OMArrayProperty>. The
     //          value is set by copying <p elementCount> elements from the

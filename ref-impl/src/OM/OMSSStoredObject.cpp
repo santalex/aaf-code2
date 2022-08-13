@@ -465,9 +465,7 @@ void OMSSStoredObject::save(const OMSimpleProperty& property)
 
   OMPropertyId propertyId = property.propertyId();
   OMStoredForm storedForm = property.storedForm();
-  OMUInt32 bs = property.bitsSize();
-  ASSERT("Property value not too big", bs <= OMPROPERTYSIZE_MAX);
-  OMPropertySize size = static_cast<OMPropertySize>(bs);
+  OMUInt32 size = property.bitsSize();
   OMByte* bits = property.bits();
   const OMType* propertyType = property.type();
 
@@ -1121,9 +1119,8 @@ void OMSSStoredObject::restore(OMSimpleProperty& property,
     }
 
     // Internalize property value
-    OMUInt32 sz = propertyType->internalSize(buffer, externalSize);
-    ASSERT("Property not too big", sz <= OMPROPERTYSIZE_MAX);
-    OMPropertySize requiredBytesSize = static_cast<OMPropertySize>(sz);
+    OMUInt32 requiredBytesSize = propertyType->internalSize(buffer,
+                                                            externalSize);
     property.setSize(requiredBytesSize);
     ASSERT("Property value buffer large enough",
                                          property.size() >= requiredBytesSize);

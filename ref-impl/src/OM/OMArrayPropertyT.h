@@ -59,7 +59,7 @@ OMArrayProperty<Element>::~OMArrayProperty(void)
   //   @this const
 template <typename Element>
 void OMArrayProperty<Element>::getValue(Element* value,
-                                        OMPropertySize valueSize) const
+                                        OMUInt32 valueSize) const
 {
   TRACE("OMArrayProperty<Element>::getValue");
   PRECONDITION("Buffer large enough", valueSize >= size());
@@ -79,7 +79,7 @@ void OMArrayProperty<Element>::getValue(Element* value,
   //   @parm The size of the array <p value> in bytes
 template <typename Element>
 void OMArrayProperty<Element>::setValue(const Element* value,
-                                        OMPropertySize valueSize)
+                                        OMUInt32 valueSize)
 {
   TRACE("OMArrayProperty<Element>::setValue");
 

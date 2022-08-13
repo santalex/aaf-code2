@@ -56,12 +56,12 @@ public:
   virtual ~OMVariableSizeProperty(void);
 
     // @cmember Get the value of this <c OMVariableSizeProperty>.
-  void getValue(PropertyType* value, OMPropertySize valueSize) const;
+  void getValue(PropertyType* value, OMUInt32 valueSize) const;
 
     // @cmember Set the value of this <c OMVariableSizeProperty>. The
     //          value is set by copying <p valueSize> bytes from the
     //          address <p value> into the <c OMVariableSizeProperty>.
-  void setValue(const PropertyType* value, OMPropertySize valueSize);
+  void setValue(const PropertyType* value, OMUInt32 valueSize);
 
     // @cmember Set the value of this <c OMVariableSizeProperty>. The
     //          value is set by copying <p elementCount> elements from the

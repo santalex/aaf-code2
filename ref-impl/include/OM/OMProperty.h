@@ -226,7 +226,7 @@ public:
     // @cmember Constructor.
   OMSimpleProperty(const OMPropertyId propertyId,
                    const wchar_t* name,
-                   OMPropertySize valueSize);
+                   OMUInt32 valueSize);
 
     // @cmember Constructor.
   OMSimpleProperty(const OMPropertyId propertyId, const wchar_t* name);
@@ -242,7 +242,7 @@ public:
   virtual void restore(OMPropertySize externalSize);
 
     // @cmember The size of this <c OMSimpleProperty>.
-  OMPropertySize size(void) const;
+  OMUInt32 size(void) const;
 
     // @cmember The number of objects contained within this
     //          <c OMSimpleProperty> if any.
@@ -268,7 +268,7 @@ public:
   virtual void setBits(const OMByte* bits, OMUInt32 size);
 
     // @cmember Set the size of this <c OMSimpleProperty> to <p newSize> bytes.
-  void setSize(OMPropertySize newSize);
+  void setSize(OMUInt32 newSize);
 
   // Copying.
 
@@ -282,14 +282,14 @@ protected:
   // @access Protected members.
 
     // @cmember Get the value of this <c OMSimpleProperty>.
-  void get(void* value, OMPropertySize valueSize) const;
+  void get(void* value, OMUInt32 valueSize) const;
 
     // @cmember Set the value of this <c OMSimpleProperty>.
-  void set(const void* value, OMPropertySize valueSize);
+  void set(const void* value, OMUInt32 valueSize);
 
 private:
 
-  OMPropertySize _size;
+  OMUInt32 _size;
   unsigned char* _bits;
 
     // OMSimpleProperty can't be assigned - declare but don't define

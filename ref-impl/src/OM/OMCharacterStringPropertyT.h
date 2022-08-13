@@ -88,10 +88,11 @@ void OMCharacterStringProperty<CharacterType>::assign(
   } else {
     source = &empty;
   }
-  ASSERT("String not too long",
-   ((stringLength(source) + 1) * sizeof(CharacterType)) <= OMPROPERTYSIZE_MAX);
-  this->setValue(source, static_cast<OMPropertySize>(
-                          (stringLength(source) + 1) * sizeof(CharacterType)));
+  ASSERT("String not too big",
+         ((stringLength(source) + 1) * sizeof(CharacterType)) <= OMUINT32_MAX);
+  this->setValue(
+    source,
+    static_cast<OMUInt32>((stringLength(source) + 1) * sizeof(CharacterType)));
 }
 
   // @mfunc The length of this <c OMCharacterStringProperty> in
