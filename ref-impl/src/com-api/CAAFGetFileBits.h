@@ -98,6 +98,9 @@ public:
   ///
   /// AAFRESULT_OFFSET_SIZE
   ///   - position + size is larger than the size of this file.
+  ///
+  /// AAFRESULT_READ_FAILURE
+  ///   - failed to read all requested bytes from the file.
   //
   STDMETHOD (ReadAt) (
     // Buffer into which data is read

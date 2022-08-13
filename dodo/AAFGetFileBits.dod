@@ -88,7 +88,10 @@ AD_XMETHOD3(ReadAt,
   AD_STD_COMMENT_METH_ERR_NULL_PARAM\(buf\)
   ///
   /// AAFRESULT_OFFSET_SIZE
-  ///   - position + size is larger than the size of this file.)
+  ///   - position + size is larger than the size of this file.
+  ///
+  /// AAFRESULT_READ_FAILURE
+  ///   - failed to read all requested bytes from the file.)
 
 
 AD_XMETHOD1(GetSize,

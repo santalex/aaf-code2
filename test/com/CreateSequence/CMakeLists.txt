@@ -43,18 +43,10 @@ set(TARGET_DIR "${AAFSDK_TARGET_DIR}/Test")
 
 add_executable(CreateSequence CreateSequence.cpp)
 
-if(WIN32)
-    target_link_libraries(CreateSequence PRIVATE
-        AAFIID
-        AAFLIB
-        winmm.lib
-    )
-else()
-    target_link_libraries(CreateSequence PRIVATE
-        AAFIID
-        AAFLIB
-    )
-endif()
+target_link_libraries(CreateSequence PRIVATE
+    AAFIID
+    AAFLIB
+)
 
 set_target_properties(CreateSequence PROPERTIES
     VERSION ${AAFSDK_VERSION_STRING}

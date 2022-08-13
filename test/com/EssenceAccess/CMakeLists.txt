@@ -43,18 +43,10 @@ set(TARGET_DIR "${AAFSDK_TARGET_DIR}/Test")
 
 add_executable(EssenceAccess EssenceAccess.cpp)
 
-if(WIN32)
-    target_link_libraries(EssenceAccess PRIVATE
-        AAFIID
-        AAFLIB
-        winmm.lib
-    )
-else()
-    target_link_libraries(EssenceAccess PRIVATE
-        AAFIID
-        AAFLIB
-    )
-endif()
+target_link_libraries(EssenceAccess PRIVATE
+    AAFIID
+    AAFLIB
+)
 
 set_target_properties(EssenceAccess PROPERTIES
     VERSION ${AAFSDK_VERSION_STRING}

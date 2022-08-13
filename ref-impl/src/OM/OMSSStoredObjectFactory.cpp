@@ -40,6 +40,7 @@
 
 #include "OMSSStoredObject.h"
 #include "OMAssertions.h"
+#include "OMExceptions.h"
 #include "OMUtilities.h"
 #include "OMRawStorage.h"
 #include "OMUniqueObjectIdentType.h"
@@ -412,7 +413,11 @@ void OMSSStoredObjectFactory::writeSignature(
                       reinterpret_cast<const OMByte*>(&sig),
                       sizeof(sig),
                       count);
-  ASSERT("All bytes written", count == sizeof(sig));
+  if (count != sizeof(sig)) {
+    throw OMException("Failed to write all requested bytes");
+  }
+
+  POSTCONDITION("All bytes written", count == sizeof(sig));
 }
 
   // @mfunc Write the signature to the given file.

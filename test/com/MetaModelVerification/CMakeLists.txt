@@ -46,18 +46,10 @@ add_executable(MetaModelVerification
     ResultCodes.h
 )
 
-if(WIN32)
-    target_link_libraries(MetaModelVerification PRIVATE
-        AAFIID
-        AAFLIB
-        winmm.lib
-    )
-else()
-    target_link_libraries(MetaModelVerification PRIVATE
-        AAFIID
-        AAFLIB
-    )
-endif()
+target_link_libraries(MetaModelVerification PRIVATE
+    AAFIID
+    AAFLIB
+)
 
 set_target_properties(MetaModelVerification PROPERTIES
     VERSION ${AAFSDK_VERSION_STRING}

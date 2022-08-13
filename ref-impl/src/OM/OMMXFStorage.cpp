@@ -688,6 +688,9 @@ void OMMXFStorage::write(const OMUInt8& i)
 
   OMUInt32 x;
   write(&i, sizeof(OMUInt8), x);
+  if (x != sizeof(OMUInt8)) {
+    throw OMException("Failed to write all requested bytes");
+  }
 
   POSTCONDITION("All bytes written", x == sizeof(OMUInt8));
 }
@@ -703,6 +706,9 @@ void OMMXFStorage::write(const OMUInt16& i, bool reorderBytes)
   }
   OMUInt32 x;
   write(src, sizeof(OMUInt16), x);
+  if (x != sizeof(OMUInt16)) {
+    throw OMException("Failed to write all requested bytes");
+  }
 
   POSTCONDITION("All bytes written", x == sizeof(OMUInt16));
 }
@@ -718,6 +724,9 @@ void OMMXFStorage::write(const OMUInt32& i, bool reorderBytes)
   }
   OMUInt32 x;
   write(src, sizeof(OMUInt32), x);
+  if (x != sizeof(OMUInt32)) {
+    throw OMException("Failed to write all requested bytes");
+  }
 
   POSTCONDITION("All bytes written", x == sizeof(OMUInt32));
 }
@@ -733,6 +742,9 @@ void OMMXFStorage::write(const OMUInt64& i, bool reorderBytes)
   }
   OMUInt32 x;
   write(src, sizeof(OMUInt64), x);
+  if (x != sizeof(OMUInt64)) {
+    throw OMException("Failed to write all requested bytes");
+  }
 
   POSTCONDITION("All bytes written", x == sizeof(OMUInt64));
 }
@@ -751,6 +763,9 @@ void OMMXFStorage::write(const OMUniqueObjectIdentification& id,
   }
   OMUInt32 x;
   write(src, sizeof(OMUniqueObjectIdentification), x);
+  if (x != sizeof(OMUniqueObjectIdentification)) {
+    throw OMException("Failed to write all requested bytes");
+  }
 
   POSTCONDITION("All bytes written",
                                     x == sizeof(OMUniqueObjectIdentification));
@@ -762,6 +777,9 @@ void OMMXFStorage::write(const OMByte* buffer, const OMUInt32& bufferSize)
 
   OMUInt32 x;
   write(buffer, bufferSize, x);
+  if (x != bufferSize) {
+    throw OMException("Failed to write all requested bytes");
+  }
 
   POSTCONDITION("All bytes written", x == bufferSize);
 }
@@ -773,6 +791,9 @@ void OMMXFStorage::writeKLVKey(const OMKLVKey& key)
   OMUInt32 x;
   const OMByte* src = reinterpret_cast<const OMByte*>(&key);
   write(src, sizeof(OMKLVKey), x);
+  if (x != sizeof(OMKLVKey)) {
+    throw OMException("Failed to write all requested bytes");
+  }
 
   POSTCONDITION("All bytes written", x == sizeof(OMKLVKey));
 }
@@ -896,6 +917,9 @@ void OMMXFStorage::writeBerLength(OMUInt32 lengthSize, const OMUInt64& length)
   berEncode(berLength, sizeof(berLength), lengthSize, length);
   OMUInt32 x;
   write(berLength, lengthSize + 1, x);
+  if (x != (lengthSize + 1)) {
+    throw OMException("Failed to write all requested bytes");
+  }
 
   POSTCONDITION("All bytes written", x == (lengthSize + 1));
 }
@@ -1204,8 +1228,11 @@ void OMMXFStorage::read(OMUInt8& i) const
   OMUInt8 result;
   OMUInt32 x;
   read(&result, sizeof(OMUInt8), x);
-  ASSERT("All bytes read", x == sizeof(OMUInt8));
+  if (x != sizeof(OMUInt8)) {
+    throw OMException("Failed to read all requested bytes");
+  }
   i = result;
+  POSTCONDITION("All bytes read", x == sizeof(OMUInt8));
 }
 
 void OMMXFStorage::read(OMInt8& i) const
@@ -1214,8 +1241,11 @@ void OMMXFStorage::read(OMInt8& i) const
   OMInt8 result;
   OMUInt32 x;
   read(reinterpret_cast<OMByte*>(&result), sizeof(OMInt8), x);
-  ASSERT("All bytes read", x == sizeof(OMInt8));
+  if (x != sizeof(OMInt8)) {
+    throw OMException("Failed to read all requested bytes");
+  }
   i = result;
+  POSTCONDITION("All bytes read", x == sizeof(OMInt8));
 }
 
 void OMMXFStorage::read(OMUInt16& i, bool reorderBytes) const
@@ -1225,11 +1255,14 @@ void OMMXFStorage::read(OMUInt16& i, bool reorderBytes) const
   OMUInt32 x;
   OMByte* dest = reinterpret_cast<OMByte*>(&result);
   read(dest, sizeof(OMUInt16), x);
-  ASSERT("All bytes read", x == sizeof(OMUInt16));
+  if (x != sizeof(OMUInt16)) {
+    throw OMException("Failed to read all requested bytes");
+  }
   if (reorderBytes) {
     OMType::reorderInteger(dest, sizeof(OMUInt16));
   }
   i = result;
+  POSTCONDITION("All bytes read", x == sizeof(OMUInt16));
 }
 
 void OMMXFStorage::read(OMUInt32& i, bool reorderBytes) const
@@ -1239,11 +1272,14 @@ void OMMXFStorage::read(OMUInt32& i, bool reorderBytes) const
   OMUInt32 x;
   OMByte* dest = reinterpret_cast<OMByte*>(&result);
   read(dest, sizeof(OMUInt32), x);
-  ASSERT("All bytes read", x == sizeof(OMUInt32));
+  if (x != sizeof(OMUInt32)) {
+    throw OMException("Failed to read all requested bytes");
+  }
   if (reorderBytes) {
     OMType::reorderInteger(dest, sizeof(OMUInt32));
   }
   i = result;
+  POSTCONDITION("All bytes read", x == sizeof(OMUInt32));
 }
 
 void OMMXFStorage::read(OMUInt64& i, bool reorderBytes) const
@@ -1253,11 +1289,14 @@ void OMMXFStorage::read(OMUInt64& i, bool reorderBytes) const
   OMUInt32 x;
   OMByte* dest = reinterpret_cast<OMByte*>(&result);
   read(dest, sizeof(OMUInt64), x);
-  ASSERT("All bytes read", x == sizeof(OMUInt64));
+  if (x != sizeof(OMUInt64)) {
+    throw OMException("Failed to read all requested bytes");
+  }
   if (reorderBytes) {
     OMType::reorderInteger(dest, sizeof(OMUInt64));
   }
   i = result;
+  POSTCONDITION("All bytes read", x == sizeof(OMUInt64));
 }
 
 void OMMXFStorage::read(OMInt64& i, bool reorderBytes) const
@@ -1267,11 +1306,14 @@ void OMMXFStorage::read(OMInt64& i, bool reorderBytes) const
   OMUInt32 x;
   OMByte* dest = reinterpret_cast<OMByte*>(&result);
   read(dest, sizeof(OMInt64), x);
-  ASSERT("All bytes read", x == sizeof(OMInt64));
+  if (x != sizeof(OMInt64)) {
+    throw OMException("Failed to read all requested bytes");
+  }
   if (reorderBytes) {
     OMType::reorderInteger(dest, sizeof(OMInt64));
   }
   i = result;
+  POSTCONDITION("All bytes read", x == sizeof(OMInt64));
 }
 
 void OMMXFStorage::read(OMUniqueObjectIdentification& id,
@@ -1282,13 +1324,16 @@ void OMMXFStorage::read(OMUniqueObjectIdentification& id,
   OMUInt32 x;
   OMByte* dest = reinterpret_cast<OMByte*>(&result);
   read(dest, sizeof(OMUniqueObjectIdentification), x);
-  ASSERT("All bytes read", x == sizeof(OMUniqueObjectIdentification));
+  if (x != sizeof(OMUniqueObjectIdentification)) {
+    throw OMException("Failed to read all requested bytes");
+  }
   if (reorderBytes) {
     OMUniqueObjectIdentificationType::instance()->reorder(
                                          dest,
                                          sizeof(OMUniqueObjectIdentification));
   }
   id = result;
+  POSTCONDITION("All bytes read", x == sizeof(OMUniqueObjectIdentification));
 }
 
 void OMMXFStorage::read(OMByte* buffer, const OMUInt32& bufferSize) const
@@ -1296,7 +1341,10 @@ void OMMXFStorage::read(OMByte* buffer, const OMUInt32& bufferSize) const
   TRACE("OMMXFStorage::read");
   OMUInt32 x;
   read(buffer, bufferSize, x);
-  ASSERT("All bytes read", x == bufferSize);
+  if (x != bufferSize) {
+    throw OMException("Failed to read all requested bytes");
+  }
+  POSTCONDITION("All bytes read", x == bufferSize);
 }
 
 void OMMXFStorage::read(OMByte* bytes,
@@ -1314,6 +1362,9 @@ void OMMXFStorage::readKLVKey(OMKLVKey& key) const
   OMUInt32 x;
   OMByte* dest = reinterpret_cast<OMByte*>(&key);
   read(dest, sizeof(OMKLVKey), x);
+  if (x != sizeof(OMKLVKey)) {
+    throw OMException("Failed to read all requested bytes");
+  }
 
   POSTCONDITION("All bytes read", x == sizeof(OMKLVKey));
 }
@@ -1325,11 +1376,14 @@ bool OMMXFStorage::readOuterKLVKey(OMKLVKey& key) const
   OMUInt32 x;
   OMByte* dest = reinterpret_cast<OMByte*>(&key);
   read(dest, sizeof(OMKLVKey), x);
-  ASSERT("Read whole key or nothing", (x == 0) || (x == sizeof(OMKLVKey)));
+  if (x != 0 && x != sizeof(OMKLVKey)) {
+    throw OMException("Failed to read all requested bytes");
+  }
   bool result = false;
   if (x == sizeof(OMKLVKey)) {
     result = true;
   }
+  POSTCONDITION("Read whole key or nothing", (result ? x == sizeof(OMKLVKey) : x == 0));
   return result;
 }
 
@@ -1849,6 +1903,10 @@ void OMMXFStorage::streamRawWrite(OMUInt32 /* sid */,
 
   OMUInt32 bytesWritten;
   writeAt(rawPosition, rawBytes, rawByteCount, bytesWritten);
+  if (bytesWritten != rawByteCount) {
+    throw OMException("Failed to write all requested bytes");
+  }
+
   POSTCONDITION("All bytes written", bytesWritten == rawByteCount);
 }
 
@@ -2178,6 +2236,10 @@ void OMMXFStorage::streamRawRead(OMUInt32 /* sid */,
 
   OMUInt32 bytesRead;
   readAt(rawPosition, rawBytes, rawByteCount, bytesRead);
+  if (bytesRead != rawByteCount) {
+    throw OMException("Failed to read all requested bytes");
+  }
+
   POSTCONDITION("All bytes read", bytesRead == rawByteCount);
 }
 

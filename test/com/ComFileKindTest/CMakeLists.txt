@@ -47,18 +47,10 @@ target_include_directories(ComFileKindTest PRIVATE
     ${AAFSDK_ROOT}/Utilities/Include
 )
 
-if(WIN32)
-    target_link_libraries(ComFileKindTest PRIVATE
-        AAFIID
-        AAFLIB
-        winmm.lib
-    )
-else()
-    target_link_libraries(ComFileKindTest PRIVATE
-        AAFIID
-        AAFLIB
-    )
-endif()
+target_link_libraries(ComFileKindTest PRIVATE
+    AAFIID
+    AAFLIB
+)
 
 set_target_properties(ComFileKindTest PROPERTIES
     VERSION ${AAFSDK_VERSION_STRING}

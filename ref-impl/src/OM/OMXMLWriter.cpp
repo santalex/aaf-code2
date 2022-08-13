@@ -927,9 +927,14 @@ OMXMLWriterSimple::write(const wchar_t* data, OMUInt32 length)
     if (_encoding == UTF8)
     {
         char* utf8Data = utf16ToUTF8(data);
+        OMUInt32 utf8Length = static_cast<OMUInt32>(strlen(utf8Data));
         OMUInt32 numWritten;
-        _xmlStream->write((const OMByte*)utf8Data, strlen(utf8Data), numWritten);
+        _xmlStream->write((const OMByte*)utf8Data, utf8Length, numWritten);
         delete [] utf8Data;
+        if (numWritten != utf8Length)
+        {
+            throw OMException("Failed to write all requested bytes");
+        }
     }
     else
     {
@@ -950,6 +955,11 @@ OMXMLWriterSimple::write(const wchar_t* data, OMUInt32 length)
         _xmlStream->write((OMByte*)buffer, length * sizeof(OMUInt16), numWritten);
         
         delete [] buffer;
+
+        if (numWritten != (length * sizeof(OMUInt16)))
+        {
+            throw OMException("Failed to write all requested bytes");
+        }
     }
 }
 
@@ -960,6 +970,10 @@ OMXMLWriterSimple::writeRaw(const OMByte* bytes, OMUInt32 size)
 
     OMUInt32 numWritten;
     _xmlStream->write(bytes, size, numWritten);
+    if (numWritten != size)
+    {
+        throw OMException("Failed to write all requested bytes");
+    }
 }
 
 

@@ -12366,6 +12366,9 @@ DECLARE_INTERFACE_(IAAFGetFileBits, IUnknown)
   /// AAFRESULT_OFFSET_SIZE
   ///   - position + size is larger than the size of this file.
   ///
+  /// AAFRESULT_READ_FAILURE
+  ///   - failed to read all requested bytes from the file.
+  ///
   /// @param buf [out, size_is(bufSize)] Buffer into which data is read
   /// @param bufSize [in] Size of buf in bytes
   /// @param position [in] The position in bytes at which to read
