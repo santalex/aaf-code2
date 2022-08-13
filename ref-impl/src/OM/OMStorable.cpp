@@ -139,7 +139,13 @@ void OMStorable::close(void)
   TRACE("OMStorable::close");
   PRECONDITION("Object is persistent", persistent());
 
-  if (_store != 0) {
+  // Currently (see the "Temporary brute force ..." comments) _store
+  // of NULL does not indicate whether there is a stored object associated
+  // with this OMStorable. On the other hand, _exists alone cannot be used
+  // either because OMRootStorable does not maintain its value (a TODO
+  // maybe?). Instead, both _store and _exists are used here to determine
+  // if referenced OMStorables need to be closed.
+  if (_store != 0 || _exists) {
     OMPropertySetIterator iterator(_persistentProperties, OMBefore);
     while (++iterator) {
       OMProperty* p = iterator.property();
@@ -149,9 +155,11 @@ void OMStorable::close(void)
       }
     }
 
-    _store->close();
-    delete _store;
-    _store = 0;
+    if (_store != 0) {
+      _store->close();
+      delete _store;
+      _store = 0;
+    }
   } // else silently ignore unsaved object
   _exists = false;
 
@@ -169,13 +177,13 @@ void OMStorable::restoreContents(void)
   }
   catch (...)
   {
-	// See comment below: "Temporary brute force...".
-	// It applies here as well.
-	ASSERT("Valid store", _store != 0);
+  // See comment below: "Temporary brute force...".
+  // It applies here as well.
+  ASSERT("Valid store", _store != 0);
     _store->close();
-	delete _store;
-	_store = 0;
-	throw;
+  delete _store;
+  _store = 0;
+  throw;
   }
 
   // Temporary brute force solution to the Microsoft Structured
@@ -217,11 +225,14 @@ void OMStorable::detach(void)
 {
   TRACE("OMStorable::detach");
 
-  if (_store != 0) {
-    // TODO: This and manipulation of _store and _exists below can be
-    // accomplished with a single call to OMStorable::close().
-    // Also, it is not entirely clear whether this recursive close()
-    // is really necessary.
+  // Detaching OMStorable invalidates its in-file representation (in
+  // general - actual behavior is format-specific). Close this and
+  // referenced OMStorables to force creation of new OMStoredObjects -
+  // and in-file representations - if the OMStorable gets re-attached.
+  //
+  // See comments in OMStorable::close() about the role of _store and
+  // _exists.
+  if (_store != 0 || _exists) {
     OMPropertySetIterator iterator(_persistentProperties, OMBefore);
     while (++iterator) {
       OMProperty* p = iterator.property();
@@ -235,9 +246,11 @@ void OMStorable::detach(void)
     // to deal with any persisted representation of this unattached
     // OMStorable.
 
-    _store->close();
-    delete _store;
-    _store = 0;
+    if (_store != 0) {
+      _store->close();
+      delete _store;
+      _store = 0;
+    }
   }
 
   _containingProperty = 0;

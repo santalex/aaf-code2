@@ -1645,9 +1645,10 @@ static HRESULT CreateAAFFile(
 
 	  // Test changing the mob id after the mob is attached to the
 	  // content store.  Change it, then reset to the original id.
+	  // (See the test for id change after save below.)
 	  checkResult(pMob->SetMobID(MOBTestID2));
 	  checkResult(pMob->SetMobID(MOBTestID));
-	  
+
 	  // Create another Mob, check mob count, then delete and recheck count
 	  checkResult(defs.cdMasterMob()->
 				  CreateInstance(IID_IAAFMob, 
@@ -1703,6 +1704,19 @@ static HRESULT CreateAAFFile(
 		spDestFile->Save();
 		spDestFile->Close();
 	  }
+
+	  // Test changing the mob id after the mob is saved to file, i.e.
+	  // has a stored object associated with it. Change it, then reset
+	  // to the original id.
+	  checkResult(pFile->Save());
+	  checkResult(pMob->SetMobID(MOBTestID2));
+	  IAAFMobSP pSameMob;
+	  checkResult(pHeader->LookupMob(MOBTestID2, &pSameMob));
+	  checkExpression(pMob == pSameMob, AAFRESULT_TEST_FAILED);
+	  checkResult(pMob->SetMobID(MOBTestID));
+	  pSameMob = IAAFMobSP(NULL);
+	  checkResult(pHeader->LookupMob(MOBTestID, &pSameMob));
+	  checkExpression(pMob == pSameMob, AAFRESULT_TEST_FAILED);
 	}
   catch (HRESULT& rResult)
 	{
