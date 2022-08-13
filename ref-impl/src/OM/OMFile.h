@@ -318,6 +318,14 @@ public:
 
   OMStoredObject* rootStore(void);
 
+    // @cmember Clear the root <c OMStoredObject> referenced by this
+    //          <c OMFile>.
+    // @devnote This call is intended to be used in emergencies like having
+    //          to destroy root <c OMStorable> and its root <c OMStoredObject>
+    //          when the former fails to get restored from file having already
+    //          provided its stored object to this <c OMFile>.
+  void clearRootStore();
+
   OMDictionary* dictionary(void) const;
 
   const OMClassFactory* classFactory(void) const;

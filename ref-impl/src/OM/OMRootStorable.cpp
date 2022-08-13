@@ -82,7 +82,12 @@ void OMRootStorable::close(void)
 {
   TRACE("OMRootStorable::close");
 
-  _clientRoot->close();
+  // Do not assume _clientRoot reference is not void, i.e. that
+  // OMStrongReferenceProperty::operator->() returns a valid pointer.
+  // Use OMStrongReferenceProperty::close() to ensure only non-NULL
+  // references get closed.
+  _clientRoot.close();
+
   // HACK4MEIP2
   OMStorable* d = _dictionary;
   if (d != 0) {

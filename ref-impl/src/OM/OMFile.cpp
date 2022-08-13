@@ -1048,6 +1048,13 @@ OMStoredObject* OMFile::rootStore(void)
   return _rootStore;
 }
 
+void OMFile::clearRootStore(void)
+{
+  TRACE("OMFile::clearRootStore");
+
+  _rootStore = 0; // We don't own _rootStore
+}
+
 OMDictionary* OMFile::dictionary(void) const
 {
   TRACE("OMFile::dictionary");

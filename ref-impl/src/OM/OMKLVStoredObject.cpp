@@ -1205,125 +1205,134 @@ OMRootStorable* OMKLVStoredObject::restore(OMFile& file)
   root->attach(&file);
   root->setStore(file.rootStore());
   root->setClassFactory(metaDictionary);
-  // HACK4MEIP2
-  if (cid == OMRootStorable::_rootClassId ||
-      cid == SMPTERootClassId) {
-    flatRestore(*root->propertySet());
-    _storage->removeObject(*root);
-    // restore the meta object directory
-    //
-    if (_storage->objectDirectoryOffset() != 0) {
-      _storage->restoreObjectDirectory(headerPosition);
+  try {
+    // HACK4MEIP2
+    if (cid == OMRootStorable::_rootClassId ||
+        cid == SMPTERootClassId) {
+      flatRestore(*root->propertySet());
+      _storage->removeObject(*root);
+      // restore the meta object directory
+      //
+      if (_storage->objectDirectoryOffset() != 0) {
+        _storage->restoreObjectDirectory(headerPosition);
+      }
+      _storage->readKLVKey(k);
+      convert(cid, k);
+    } else {
+      // tjb - what ?
     }
-    _storage->readKLVKey(k);
-    convert(cid, k);
-  } else {
-    // tjb - what ?
-  }
-
-  // restore the meta dictionary
-  //
-
-  while (metaDictionary->isMeta(cid)) {
-    OMStorable* object = metaDictionary->create(cid);
-    ASSERT("Registered class id", object != 0);
-    ASSERT("Valid class factory", metaDictionary == object->classFactory());
-#if !defined(OM_NO_VALIDATE_DEFINITIONS)
-    ASSERT("Valid class definition", object->definition() != 0);
-#endif
-    flatRestore(*object->propertySet());
-
-    // Attach the object.
-    // tjb !!! object->attach(containingObject, name);
-    // tjb !!! object->setStore(this);
-    object->onRestore(file.clientOnSaveContext());
-
-    _storage->readKLVKey(k);
-    convert(cid, k);
-  }
-  OMProperty* mdp = root->propertySet()->get(PID_Root_MetaDictionary);
-  OMStrongReference* mdsr = dynamic_cast<OMStrongReference*>(mdp);
-  ASSERT("Valid type", mdsr != 0);
-  OMStrongObjectReference& mdr = mdsr->reference();
-  OMStorable* mdo = mdr.getValue();
-  // HACK4MEIP2
-  if (mdo != 0) {
-    ASSERT("Valid object", mdo != 0);
-    deepRestore(*mdo->propertySet());
-  } else {
-    // tjb - what ?
-  }
-
-#if 1 // DMS1SUPPORT
-  // Register extended definitions with the restored dictionary and
-  // re-read the primer to update the extended definitions with
-  // information from the primer.
-  if (file.accessMode() == OMFile::readOnlyMode) {
-    metaDictionary->extend();
-
-    OMUInt64 p = _storage->position();
-    _storage->setPosition(primerPosition);
-    readPrimerPack(file.dictionary());
-    _storage->setPosition(p);
-  }
-#endif
-
-  // restore the client root
-  //
-  OMStorable* r = 0;
-  root->setClassFactory(dictionary);
-  convert(cid, k);
-  while (!OMMXFStorageBase::endsMetadata(k)) {
-    if (dictionary->isRegistered(cid)) {
-      OMStorable* object = dictionary->create(cid);
+  
+    // restore the meta dictionary
+    //
+  
+    while (metaDictionary->isMeta(cid)) {
+      OMStorable* object = metaDictionary->create(cid);
       ASSERT("Registered class id", object != 0);
-      ASSERT("Valid class factory", dictionary == object->classFactory());
+      ASSERT("Valid class factory", metaDictionary == object->classFactory());
 #if !defined(OM_NO_VALIDATE_DEFINITIONS)
       ASSERT("Valid class definition", object->definition() != 0);
 #endif
-      if (r == 0) {
-        r = object; // HACK4MEIP2 - First object is root
-      }
-
       flatRestore(*object->propertySet());
-
-	  // Attach the object.
+  
+      // Attach the object.
       // tjb !!! object->attach(containingObject, name);
       // tjb !!! object->setStore(this);
       object->onRestore(file.clientOnSaveContext());
+  
+      _storage->readKLVKey(k);
+      convert(cid, k);
+    }
+    OMProperty* mdp = root->propertySet()->get(PID_Root_MetaDictionary);
+    OMStrongReference* mdsr = dynamic_cast<OMStrongReference*>(mdp);
+    ASSERT("Valid type", mdsr != 0);
+    OMStrongObjectReference& mdr = mdsr->reference();
+    OMStorable* mdo = mdr.getValue();
+    // HACK4MEIP2
+    if (mdo != 0) {
+      ASSERT("Valid object", mdo != 0);
+      deepRestore(*mdo->propertySet());
     } else {
-      //  Dark meta data
-      _storage->skipLV();
+      // tjb - what ?
     }
-
-    bool b = _storage->readOuterKLVKey(k);
-    if (!b) {
-      throw OMException("Failed to read key while parsing metadata.");
+  
+#if 1 // DMS1SUPPORT
+    // Register extended definitions with the restored dictionary and
+    // re-read the primer to update the extended definitions with
+    // information from the primer.
+    if (file.accessMode() == OMFile::readOnlyMode) {
+      metaDictionary->extend();
+  
+      OMUInt64 p = _storage->position();
+      _storage->setPosition(primerPosition);
+      readPrimerPack(file.dictionary());
+      _storage->setPosition(p);
     }
+#endif
+  
+    // restore the client root
+    //
+    OMStorable* r = 0;
+    root->setClassFactory(dictionary);
     convert(cid, k);
+    while (!OMMXFStorageBase::endsMetadata(k)) {
+      if (dictionary->isRegistered(cid)) {
+        OMStorable* object = dictionary->create(cid);
+        ASSERT("Registered class id", object != 0);
+        ASSERT("Valid class factory", dictionary == object->classFactory());
+#if !defined(OM_NO_VALIDATE_DEFINITIONS)
+        ASSERT("Valid class definition", object->definition() != 0);
+#endif
+        if (r == 0) {
+          r = object; // HACK4MEIP2 - First object is root
+        }
+  
+        flatRestore(*object->propertySet());
+  
+        // Attach the object.
+        // tjb !!! object->attach(containingObject, name);
+        // tjb !!! object->setStore(this);
+        object->onRestore(file.clientOnSaveContext());
+      } else {
+        //  Dark meta data
+        _storage->skipLV();
+      }
+  
+      bool b = _storage->readOuterKLVKey(k);
+      if (!b) {
+        throw OMException("Failed to read key while parsing metadata.");
+      }
+      convert(cid, k);
+    }
+    ASSERT("Root object found", r != 0);
+    OMProperty* hp = root->propertySet()->get(PID_Root_Header);
+    OMStrongReference* hsr = dynamic_cast<OMStrongReference*>(hp);
+    ASSERT("Valid type", hsr != 0);
+    OMStrongObjectReference& hr = hsr->reference();
+    OMStorable* ho = hr.getValue();
+    // HACK4MEIP2
+    if (ho != 0) {
+      ASSERT("Valid object", ho != 0);
+      deepRestore(*ho->propertySet());
+    } else {
+      hr.setValue(r);
+      deepRestore(*r->propertySet());
+      _storage->removeObject(*r);
+    }
+  
+    _storage->skipLV(); // This V is fill
+  
+    _storage->restoreStreams();
+
+    _storage->clearObjectDirectory();
+  } catch (const OMException&) {
+    // See OMFile::close() for how to destroy root OMStorable
+    file.clearRootStore();
+    root->close();
+    root->detach();
+    delete root;
+    root = 0;
+    throw;
   }
-  ASSERT("Root object found", r != 0);
-  OMProperty* hp = root->propertySet()->get(PID_Root_Header);
-  OMStrongReference* hsr = dynamic_cast<OMStrongReference*>(hp);
-  ASSERT("Valid type", hsr != 0);
-  OMStrongObjectReference& hr = hsr->reference();
-  OMStorable* ho = hr.getValue();
-  // HACK4MEIP2
-  if (ho != 0) {
-    ASSERT("Valid object", ho != 0);
-    deepRestore(*ho->propertySet());
-  } else {
-    hr.setValue(r);
-    deepRestore(*r->propertySet());
-    _storage->removeObject(*r);
-  }
-
-  _storage->skipLV(); // This V is fill
-
-  _storage->restoreStreams();
-
-  _storage->clearObjectDirectory();
-
   return root;
 }
 
