@@ -2110,15 +2110,25 @@ OMXMLStoredObject::saveRecord(const OMByte* internalBytes, OMUInt32 internalSize
         // the member's internalSize() due to padding.
         // The following loop externalizes the record members to get rid
         // of padding, then internalizes each externalized member to build
-        // record reresenation without padding.
-        OMByte* unpaddedIternalBytes = new OMByte[type->internalSize()];
+        // record represenation without padding.
+
+        // Can't trust OMRecordType::internalSize() as its result reflects
+        // record registration status that may differ from registration
+        // status of individual member types. Instead calculate total of
+        // member types' internal sizes.
+        OMUInt32 unpaddedIternalSize = 0;
+        OMUInt32 count = type->memberCount();
+        for (OMUInt32 i = 0; i < count; i++)
+        {
+            unpaddedIternalSize += type->memberType(i)->internalSize();
+        }
+        OMByte* unpaddedIternalBytes = new OMByte[unpaddedIternalSize];
 
         OMByte* externalBytes = new OMByte[type->externalSize()];
         type->externalize(internalBytes, internalSize, externalBytes, type->externalSize(), hostByteOrder());
 
         const OMByte* memberExternalBytes = externalBytes;
         OMByte* memberUnpaddedInternalBytes = unpaddedIternalBytes;
-        OMUInt32 count = type->memberCount();
         for (OMUInt32 i = 0; i < count; i++)
         {
             const OMType* memberType = type->memberType(i);
